@@ -37,14 +37,6 @@
   "license": "ISC",
   "main": "./build/index.js",
   "name": "@uqee/stdlib",
-  "publishConfig": {
-    "ignore": [
-      "*",
-      "!build/*",
-      "!package.json",
-      "!README.md"
-    ]
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/uqee/stdlib.git"
