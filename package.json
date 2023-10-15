@@ -55,10 +55,9 @@
     ":tsc": "tsc --noEmit",
     "build": "rm -rf ./build && tsc",
     "install:husky": "husky install",
-    "reinstall": "rm -rf ./node_modules && pnpm install",
+    "reinstall": "rm -rf ./node_modules && npm install",
     "start": "true",
-    "test": "pnpm :eslint && pnpm :tsc && pnpm :jest"
+    "test": "npm run :eslint && npm run :tsc && npm run :jest"
   },
-  "types": "./build/index.d.ts",
-  "version": "0.1.0"
+  "types": "./build/index.d.ts"
 }

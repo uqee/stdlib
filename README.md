@@ -1,1 +1,1 @@
-# @uqee/stdlib
+`npm install --save-exact @uqee/stdlib`
