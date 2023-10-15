@@ -34,14 +34,27 @@
     "typegram": "5.2.0",
     "typescript": "5.2.2"
   },
+  "license": "ISC",
   "main": "./build/index.js",
-  "name": "@uqee/shared",
-  "private": "true",
+  "name": "@uqee/stdlib",
+  "publishConfig": {
+    "ignore": [
+      "*",
+      "!build/*",
+      "!package.json",
+      "!README.md"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/uqee/stdlib.git"
+  },
   "scripts": {
     ":eslint": "eslint ./src",
     ":jest": "jest --passWithNoTests",
     ":tsc": "tsc --noEmit",
     "build": "rm -rf ./build && tsc",
+    "install:husky": "husky install",
     "reinstall": "rm -rf ./node_modules && pnpm install",
     "start": "true",
     "test": "pnpm :eslint && pnpm :tsc && pnpm :jest"
