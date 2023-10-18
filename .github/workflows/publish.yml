@@ -23,10 +23,10 @@ jobs:
           npm ci
           npm run test
           npm run build
-          npm version ${{ github.ref_name }} --no-git-tag-version
 
       - name: Publish
-        uses: JS-DevTools/npm-publish@v2
-        with:
-          access: 'public'
-          token: ${{ secrets.NPM_AUTH_TOKEN }}
+        run: |
+          npm version ${{ github.ref_name }} --no-git-tag-version
+          npm publish --access public --dry-run
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
