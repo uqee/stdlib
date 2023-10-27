@@ -1,8 +1,8 @@
 {
   "dependencies": {
-    "@aws-sdk/client-dynamodb": "3.436.0",
-    "@aws-sdk/client-sqs": "3.436.0",
-    "@aws-sdk/util-dynamodb": "3.436.0",
+    "@aws-sdk/client-dynamodb": "3.437.0",
+    "@aws-sdk/client-sqs": "3.437.0",
+    "@aws-sdk/util-dynamodb": "3.437.0",
     "@googlemaps/google-maps-services-js": "3.3.41",
     "telegraf": "4.15.0"
   },
@@ -18,7 +18,7 @@
     "eslint-config-standard": "17.1.0",
     "eslint-import-resolver-alias": "1.1.2",
     "eslint-plugin-import": "2.29.0",
-    "eslint-plugin-jest": "27.4.3",
+    "eslint-plugin-jest": "27.6.0",
     "eslint-plugin-n": "16.2.0",
     "eslint-plugin-node": "11.1.0",
     "eslint-plugin-prettier": "5.0.1",
