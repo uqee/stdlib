@@ -11,7 +11,6 @@
     "inlineSourceMap": false,
     "inlineSources": false,
     "lib": ["DOM", "ESNext"],
-    "module": "CommonJS",
     "moduleResolution": "Node",
     "noErrorTruncation": true,
     "noFallthroughCasesInSwitch": true,
@@ -20,7 +19,6 @@
     "noImplicitThis": true,
     "noUnusedLocals": false,
     "noUnusedParameters": false,
-    "outDir": "./build",
     "resolveJsonModule": true,
     "rootDir": "./src",
     "skipLibCheck": true,
@@ -31,8 +29,8 @@
     "useDefineForClassFields": true
   },
   "exclude": [
-    "**/build",
-    "**/node_modules",
-    "**/tsconfig.json",
+    "/cjs",
+    "/esm",
+    "/node_modules",
   ]
 }

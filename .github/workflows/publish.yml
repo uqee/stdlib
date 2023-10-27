@@ -13,21 +13,27 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Node
+      - name: Install / PNPM
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: Install / NodeJS
         uses: actions/setup-node@v3
         with:
+          cache: 'pnpm'
           node-version: '18'
           registry-url: 'https://registry.npmjs.org' # https://docs.github.com/en/actions/publishing-packages/publishing-nodejs-packages#publishing-packages-to-the-npm-registry
 
       - name: Build
         run: |
-          npm ci
-          npm run test
-          npm run build
+          pnpm install --frozen-lockfile
+          pnpm test
+          pnpm build
 
       - name: Publish
         run: |
-          npm version ${{ github.ref_name }} --no-git-tag-version
-          npm publish --access public
+          pnpm version ${{ github.ref_name }} --no-git-tag-version
+          pnpm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
