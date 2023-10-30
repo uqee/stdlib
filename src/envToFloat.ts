@@ -1,10 +1,14 @@
+import { assert } from './assert'
 import { assertDefined } from './assertDefined'
+import { Float } from './Float'
 
-export const envToFloat = <T extends number = number>(s: string | undefined): T => {
-  assertDefined(s)
+export const envToFloat = <TFloat extends Float = Float>(
+  string: string | undefined,
+): TFloat => {
+  assertDefined(string)
 
-  const f: T = parseFloat(s) as T
-  if (isNaN(f)) throw new Error(`Invalid ENV value: ${s}`)
+  const float: TFloat = parseFloat(string) as TFloat
+  assert(!isNaN(float))
 
-  return f
+  return float
 }

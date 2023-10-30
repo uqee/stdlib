@@ -1,15 +1,20 @@
+import { assert } from './assert'
 import { assertDefined } from './assertDefined'
+import { Integer } from './Integer'
 
-export const envToInteger = <T extends number = number>(s: string | undefined, ts?: T[]): T => {
-  assertDefined(s)
+export const envToInteger = <TInteger extends Integer = Integer>(
+  string: string | undefined,
+  integers?: TInteger[],
+): TInteger => {
+  assertDefined(string)
 
-  const i: T = parseInt(s, 10) as T
-  if (isNaN(i)) throw new Error(`Invalid ENV value: ${s}`)
+  const integer: TInteger = parseInt(string, 10) as TInteger
+  assert(!isNaN(integer))
 
-  if (ts !== undefined) {
-    for (const t of ts) if (i === t) return i
-    throw new Error(`Unknown ENV value: ${s}`)
+  if (integers !== undefined) {
+    for (const i of integers) if (i === integer) return integer
+    throw new Error()
   }
 
-  return i
+  return integer
 }

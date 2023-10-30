@@ -1,9 +1,12 @@
-import type { SendMessageCommandInput, SendMessageCommandOutput } from '@aws-sdk/client-sqs'
+import type {
+  SendMessageCommandInput,
+  SendMessageCommandOutput,
+} from '@aws-sdk/client-sqs'
 import { SendMessageCommand, SQSClient } from '@aws-sdk/client-sqs'
+import { Logger } from 'pino'
 
 import { Integer } from './Integer'
 import { isString } from './isString'
-import { Logger } from './Logger'
 
 //
 
@@ -27,10 +30,7 @@ export class Sqs {
   }
 
   public async send(input: SqsSendInput): Promise<SqsSendOutput> {
-    await this.logger._5_trace(
-      () => `Sqs send input`,
-      () => input,
-    )
+    this.logger.debug('Sqs send input %j', input)
 
     //
 
@@ -44,10 +44,7 @@ export class Sqs {
       QueueUrl: input.queueUrl,
     }
 
-    await this.logger._6_spam(
-      () => `Sqs send request`,
-      () => request,
-    )
+    this.logger.trace('Sqs send request %j', request)
 
     //
 
@@ -55,19 +52,13 @@ export class Sqs {
       new SendMessageCommand(request),
     )
 
-    await this.logger._6_spam(
-      () => `Sqs send response`,
-      () => response,
-    )
+    this.logger.trace('Sqs send response %j', response)
 
     //
 
     const output: SqsSendOutput = {}
 
-    await this.logger._5_trace(
-      () => `Sqs send output`,
-      () => output,
-    )
+    this.logger.debug('Sqs send output %j', output)
 
     return output
   }

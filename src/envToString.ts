@@ -1,12 +1,15 @@
 import { assertDefined } from './assertDefined'
 
-export const envToString = <T extends string = string>(s: string | undefined, ts?: T[]): T => {
-  assertDefined(s)
+export const envToString = <TString extends string = string>(
+  string: string | undefined,
+  strings?: TString[],
+): TString => {
+  assertDefined(string)
 
-  if (ts !== undefined) {
-    for (const t of ts) if (s === t) return s as T
-    throw new Error(`Unknown ENV value: ${s}`)
+  if (strings !== undefined) {
+    for (const s of strings) if (s === string) return string as TString
+    throw new Error()
   }
 
-  return s as T
+  return string as TString
 }

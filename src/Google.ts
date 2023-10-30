@@ -13,10 +13,10 @@ import {
   TimeZoneResponse,
   TimeZoneResponseData,
 } from '@googlemaps/google-maps-services-js'
+import { Logger } from 'pino'
 
 import { Float } from './Float'
 import { Integer } from './Integer'
-import { Logger } from './Logger'
 import { Timestamp } from './Timestamp'
 
 //
@@ -79,11 +79,10 @@ export class Google {
 
   //
 
-  public async directions(input: GoogleDirectionsInput): Promise<GoogleDirectionsOutput> {
-    await this.logger._5_trace(
-      () => `Google directions input`,
-      () => input,
-    )
+  public async directions(
+    input: GoogleDirectionsInput,
+  ): Promise<GoogleDirectionsOutput> {
+    this.logger.debug('Google directions input %j', input)
 
     //
 
@@ -95,19 +94,13 @@ export class Google {
       },
     }
 
-    await this.logger._6_spam(
-      () => `Google directions request`,
-      () => request,
-    )
+    this.logger.trace('Google directions request %j', request)
 
     //
 
     const response: DirectionsResponse = await this.client.directions(request)
 
-    await this.logger._6_spam(
-      () => `Google directions response.data`,
-      () => response.data,
-    )
+    this.logger.trace('Google directions response.data %j', response.data)
 
     if (response.data.status !== Status.OK) {
       throw new Error('response.data.status !== Status.OK')
@@ -124,10 +117,7 @@ export class Google {
       routeSeconds: routeLeg.duration.value,
     }
 
-    await this.logger._5_trace(
-      () => `Google directions output`,
-      () => output,
-    )
+    this.logger.debug('Google directions output %j', output)
 
     //
 
@@ -137,10 +127,7 @@ export class Google {
   public async reverseGeocode(
     input: GoogleReverseGeocodeInput,
   ): Promise<GoogleReverseGeocodeOutput> {
-    await this.logger._5_trace(
-      () => `Google reverseGeocode input`,
-      () => input,
-    )
+    this.logger.debug('Google reverseGeocode input %j', input)
 
     //
 
@@ -151,19 +138,14 @@ export class Google {
       },
     }
 
-    await this.logger._6_spam(
-      () => `Google reverseGeocode request`,
-      () => request,
-    )
+    this.logger.trace('Google reverseGeocode request %j', request)
 
     //
 
-    const response: ReverseGeocodeResponse = await this.client.reverseGeocode(request)
+    const response: ReverseGeocodeResponse =
+      await this.client.reverseGeocode(request)
 
-    await this.logger._6_spam(
-      () => `Google reverseGeocode response.data`,
-      () => response.data,
-    )
+    this.logger.trace('Google reverseGeocode response.data %j', response.data)
 
     if (response.data.status !== Status.OK) {
       throw new Error('response.data.status !== Status.OK')
@@ -174,15 +156,30 @@ export class Google {
     const geocodeResults: GeocodeResult[] = response.data.results
 
     const addressGeocodeResult: GeocodeResult | undefined = //
-      this.reverseGeocode_getGeocodeResult(geocodeResults, 'street_address' as AddressType) ??
-      this.reverseGeocode_getGeocodeResult(geocodeResults, 'premise' as AddressType) ??
-      this.reverseGeocode_getGeocodeResult(geocodeResults, 'route' as AddressType)
+      this.reverseGeocode_getGeocodeResult(
+        geocodeResults,
+        'street_address' as AddressType,
+      ) ??
+      this.reverseGeocode_getGeocodeResult(
+        geocodeResults,
+        'premise' as AddressType,
+      ) ??
+      this.reverseGeocode_getGeocodeResult(
+        geocodeResults,
+        'route' as AddressType,
+      )
 
     const cityAddressComponent: AddressComponent | undefined = //
-      this.reverseGeocode_getAddressComponent(geocodeResults, 'locality' as AddressType)
+      this.reverseGeocode_getAddressComponent(
+        geocodeResults,
+        'locality' as AddressType,
+      )
 
     const countryAddressComponent: AddressComponent | undefined = //
-      this.reverseGeocode_getAddressComponent(geocodeResults, 'country' as AddressType)
+      this.reverseGeocode_getAddressComponent(
+        geocodeResults,
+        'country' as AddressType,
+      )
 
     const provinceAddressComponent: AddressComponent | undefined = //
       this.reverseGeocode_getAddressComponent(
@@ -197,10 +194,7 @@ export class Google {
       province: provinceAddressComponent?.short_name,
     }
 
-    await this.logger._5_trace(
-      () => `Google reverseGeocode output`,
-      () => output,
-    )
+    this.logger.debug('Google reverseGeocode output %j', output)
 
     //
 
@@ -228,11 +222,10 @@ export class Google {
     )
   }
 
-  public async timezone(input: GoogleTimezoneInput): Promise<GoogleTimezoneOutput> {
-    await this.logger._5_trace(
-      () => `Google timezone input`,
-      () => input,
-    )
+  public async timezone(
+    input: GoogleTimezoneInput,
+  ): Promise<GoogleTimezoneOutput> {
+    this.logger.debug('Google timezone input %j', input)
 
     //
 
@@ -244,19 +237,13 @@ export class Google {
       },
     }
 
-    await this.logger._6_spam(
-      () => `Google timezone request`,
-      () => request,
-    )
+    this.logger.trace('Google timezone request %j', request)
 
     //
 
     const response: TimeZoneResponse = await this.client.timezone(request)
 
-    await this.logger._6_spam(
-      () => `Google timezone response.data`,
-      () => response.data,
-    )
+    this.logger.trace('Google timezone response.data %j', response.data)
 
     if (response.data.status !== Status.OK) {
       throw new Error('response.data.status !== Status.OK')
@@ -268,13 +255,11 @@ export class Google {
 
     const output: GoogleTimezoneOutput = {
       id: timeZoneResponseData.timeZoneId,
-      offsetSeconds: timeZoneResponseData.rawOffset + timeZoneResponseData.dstOffset,
+      offsetSeconds:
+        timeZoneResponseData.rawOffset + timeZoneResponseData.dstOffset,
     }
 
-    await this.logger._5_trace(
-      () => `Google timezone output`,
-      () => output,
-    )
+    this.logger.debug('Google timezone output %j', output)
 
     //
 

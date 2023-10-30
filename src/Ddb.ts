@@ -37,10 +37,10 @@ import {
   unmarshall,
   type unmarshallOptions as UnmarshallOptions,
 } from '@aws-sdk/util-dynamodb'
+import { Logger } from 'pino'
 
 import { assertType } from './assertType'
 import { Integer } from './Integer'
-import { Logger } from './Logger'
 import { Timestamp } from './Timestamp'
 
 //
@@ -69,27 +69,41 @@ export class Ddb {
   } as const
 
   public static ConditionCheck(
-    _: Omit<ConditionCheck, 'Key'> & { Key: Record<string, unknown> },
+    _: Omit<ConditionCheck, 'Key'> & {
+      Key: Record<string, unknown>
+    },
   ): ConditionCheck {
     return { ..._, Key: marshall(_.Key, Ddb.MarshallOptions) }
   }
 
-  public static Delete(_: Omit<Delete, 'Key'> & { Key: Record<string, unknown> }): Delete {
+  public static Delete(
+    _: Omit<Delete, 'Key'> & {
+      Key: Record<string, unknown>
+    },
+  ): Delete {
     return Ddb.DeleteItemCommandInput(_) as Delete
   }
 
   private static DeleteItemCommandInput(
-    _: Omit<DeleteItemCommandInput, 'Key'> & { Key: Record<string, unknown> },
+    _: Omit<DeleteItemCommandInput, 'Key'> & {
+      Key: Record<string, unknown>
+    },
   ): DeleteItemCommandInput {
     return { ..._, Key: marshall(_.Key, Ddb.MarshallOptions) }
   }
 
-  public static Get(_: Omit<Get, 'Key'> & { Key: Record<string, unknown> }): Get {
+  public static Get(
+    _: Omit<Get, 'Key'> & {
+      Key: Record<string, unknown>
+    },
+  ): Get {
     return Ddb.GetItemCommandInput(_) as Get
   }
 
   private static GetItemCommandInput(
-    _: Omit<GetItemCommandInput, 'Key'> & { Key: Record<string, unknown> },
+    _: Omit<GetItemCommandInput, 'Key'> & {
+      Key: Record<string, unknown>
+    },
   ): GetItemCommandInput {
     return { ..._, Key: marshall(_.Key, Ddb.MarshallOptions) }
   }
@@ -99,12 +113,18 @@ export class Ddb {
     removeUndefinedValues: true,
   }
 
-  public static Put(_: Omit<Put, 'Item'> & { Item: Record<string, unknown> }): Put {
+  public static Put(
+    _: Omit<Put, 'Item'> & {
+      Item: Record<string, unknown>
+    },
+  ): Put {
     return Ddb.PutItemCommandInput(_) as Put
   }
 
   private static PutItemCommandInput(
-    _: Omit<PutItemCommandInput, 'Item'> & { Item: Record<string, unknown> },
+    _: Omit<PutItemCommandInput, 'Item'> & {
+      Item: Record<string, unknown>
+    },
   ): PutItemCommandInput {
     const timestamp: Timestamp = Date.now()
 
@@ -140,7 +160,10 @@ export class Ddb {
   }
 
   public static Update(
-    _: Omit<Update, 'ExpressionAttributeNames' | 'ExpressionAttributeValues' | 'Key'> & {
+    _: Omit<
+      Update,
+      'ExpressionAttributeNames' | 'ExpressionAttributeValues' | 'Key'
+    > & {
       ExpressionAttributeNames?: Record<string, string>
       ExpressionAttributeValues?: Record<string, unknown>
       Key: Record<string, unknown>
@@ -166,16 +189,25 @@ export class Ddb {
     const updatedSet: string = `SET ${updatedAttributeName} = ${updatedAttributeValue}`
 
     _.ExpressionAttributeNames ??= {}
-    _.ExpressionAttributeNames[updatedAttributeName] = Ddb.AttributeNames.UPDATED
+    _.ExpressionAttributeNames[updatedAttributeName] =
+      Ddb.AttributeNames.UPDATED
 
     _.ExpressionAttributeValues ??= {}
-    if (!Object.prototype.hasOwnProperty.call(_.ExpressionAttributeValues, updatedAttributeValue)) {
+    if (
+      !Object.prototype.hasOwnProperty.call(
+        _.ExpressionAttributeValues,
+        updatedAttributeValue,
+      )
+    ) {
       _.ExpressionAttributeValues[updatedAttributeValue] = timestamp
     }
 
     return {
       ..._,
-      ExpressionAttributeValues: marshall(_.ExpressionAttributeValues, Ddb.MarshallOptions),
+      ExpressionAttributeValues: marshall(
+        _.ExpressionAttributeValues,
+        Ddb.MarshallOptions,
+      ),
       Key: marshall(_.Key, Ddb.MarshallOptions),
       ReturnConsumedCapacity: 'NONE',
       ReturnValues: 'ALL_NEW',
@@ -198,8 +230,10 @@ export class Ddb {
 
   //
 
-  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
-  public async batchGet<TItems extends (unknown | undefined)[] = (unknown | undefined)[]>(
+  public async batchGet<
+    // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
+    TItems extends (unknown | undefined)[] = (unknown | undefined)[],
+  >(
     _: Omit<BatchGetItemCommandInput, 'RequestItems'> & {
       RequestItems: Record<
         string, // TableName
@@ -221,7 +255,9 @@ export class Ddb {
         (result, key) => {
           result[key] = {
             ..._.RequestItems[key],
-            Keys: _.RequestItems[key].Keys.map((Key) => marshall(Key, Ddb.MarshallOptions)),
+            Keys: _.RequestItems[key].Keys.map((Key) =>
+              marshall(Key, Ddb.MarshallOptions),
+            ),
           }
           return result
         },
@@ -229,36 +265,30 @@ export class Ddb {
       ),
     }
 
-    await this.logger._6_spam(
-      () => `Ddb batchGet input`,
-      () => input,
-    )
+    this.logger.trace('Ddb batchGet input %j', input)
 
     //
 
-    const output: BatchGetItemCommandOutput = await this.dynamoDB.batchGetItem(input)
+    const output: BatchGetItemCommandOutput =
+      await this.dynamoDB.batchGetItem(input)
 
-    await this.logger._6_spam(
-      () => `Ddb batchGet output`,
-      () => output,
-    )
+    this.logger.trace('Ddb batchGet output %j', output)
 
     //
 
     const result: Record<string, TItems> = {}
     if (output.Responses !== undefined) {
       for (const tableName of Object.keys(output.Responses)) {
-        if (result[tableName] === undefined) result[tableName] = [] as unknown as TItems
+        if (result[tableName] === undefined) {
+          result[tableName] = [] as unknown as TItems
+        }
         for (const response of output.Responses[tableName]) {
           result[tableName].push(unmarshall(response, Ddb.UnmarshallOptions))
         }
       }
     }
 
-    await this.logger._5_trace(
-      () => `Ddb batchGet result`,
-      () => result,
-    )
+    this.logger.debug('Ddb batchGet result %j', result)
 
     //
 
@@ -276,28 +306,20 @@ export class Ddb {
 
     const input: BatchWriteItemCommandInput = _
 
-    await this.logger._6_spam(
-      () => `Ddb batchWrite input`,
-      () => input,
-    )
+    this.logger.trace('Ddb batchWrite input %j', input)
 
     //
 
-    const output: BatchWriteItemCommandOutput = await this.dynamoDB.batchWriteItem(input)
+    const output: BatchWriteItemCommandOutput =
+      await this.dynamoDB.batchWriteItem(input)
 
-    await this.logger._6_spam(
-      () => `Ddb batchWrite output`,
-      () => output,
-    )
+    this.logger.trace('Ddb batchWrite output %j', output)
 
     //
 
     const result: undefined = undefined
 
-    await this.logger._5_trace(
-      () => `Ddb batchWrite result`,
-      () => result,
-    )
+    this.logger.debug('Ddb batchWrite result %j', result)
 
     //
 
@@ -315,28 +337,20 @@ export class Ddb {
 
     const input: DeleteItemCommandInput = Ddb.DeleteItemCommandInput(_)
 
-    await this.logger._6_spam(
-      () => `Ddb delete input`,
-      () => input,
-    )
+    this.logger.trace('Ddb delete input %j', input)
 
     //
 
-    const output: DeleteItemCommandOutput = await this.dynamoDB.deleteItem(input)
+    const output: DeleteItemCommandOutput =
+      await this.dynamoDB.deleteItem(input)
 
-    await this.logger._6_spam(
-      () => `Ddb delete output`,
-      () => output,
-    )
+    this.logger.trace('Ddb delete output %j', output)
 
     //
 
     const result: undefined = undefined
 
-    await this.logger._5_trace(
-      () => `Ddb delete result`,
-      () => result,
-    )
+    this.logger.debug('Ddb delete result %j', result)
 
     //
 
@@ -354,19 +368,13 @@ export class Ddb {
 
     const input: GetItemCommandInput = Ddb.GetItemCommandInput(_)
 
-    await this.logger._6_spam(
-      () => `Ddb get input`,
-      () => input,
-    )
+    this.logger.trace('Ddb get input %j', input)
 
     //
 
     const output: GetItemCommandOutput = await this.dynamoDB.getItem(input)
 
-    await this.logger._6_spam(
-      () => `Ddb get output`,
-      () => output,
-    )
+    this.logger.trace('Ddb get output %j', output)
 
     //
 
@@ -374,10 +382,7 @@ export class Ddb {
       ? (unmarshall(output.Item, Ddb.UnmarshallOptions) as TItem)
       : undefined
 
-    await this.logger._5_trace(
-      () => `Ddb get result`,
-      () => result,
-    )
+    this.logger.debug('Ddb get result %j', result)
 
     //
 
@@ -395,19 +400,13 @@ export class Ddb {
 
     const input: PutItemCommandInput = Ddb.PutItemCommandInput(_)
 
-    await this.logger._6_spam(
-      () => `Ddb put input`,
-      () => input,
-    )
+    this.logger.trace('Ddb put input %j', input)
 
     //
 
     const output: PutItemCommandOutput = await this.dynamoDB.putItem(input)
 
-    await this.logger._6_spam(
-      () => `Ddb put output`,
-      () => output,
-    )
+    this.logger.trace('Ddb put output %j', output)
 
     //
 
@@ -416,10 +415,7 @@ export class Ddb {
         ? (unmarshall(input.Item, Ddb.UnmarshallOptions) as TItem)
         : undefined
 
-    await this.logger._5_trace(
-      () => `Ddb put result`,
-      () => result,
-    )
+    this.logger.debug('Ddb put result %j', result)
 
     //
 
@@ -430,8 +426,10 @@ export class Ddb {
     return { input, output, result }
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
-  public async query<TItems extends (unknown | undefined)[] = (unknown | undefined)[]>(
+  public async query<
+    // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
+    TItems extends (unknown | undefined)[] = (unknown | undefined)[],
+  >(
     _: Omit<QueryCommandInput, 'ExpressionAttributeValues'> & {
       autoPaginate?: boolean
       ExpressionAttributeValues?: Record<string, DdbScalarTypes>
@@ -456,10 +454,7 @@ export class Ddb {
           : undefined,
       }
 
-      await this.logger._6_spam(
-        () => `Ddb query input`,
-        () => input,
-      )
+      this.logger.trace('Ddb query input %j', input)
 
       inputs.push(input)
 
@@ -467,10 +462,7 @@ export class Ddb {
 
       const output: QueryCommandOutput = await this.dynamoDB.query(input)
 
-      await this.logger._6_spam(
-        () => `Ddb query output`,
-        () => output,
-      )
+      this.logger.trace('Ddb query output %j', output)
 
       outputs.push(output)
 
@@ -480,10 +472,7 @@ export class Ddb {
         unmarshall(item, Ddb.UnmarshallOptions),
       ) as TItems
 
-      await this.logger._5_trace(
-        () => `Ddb query result`,
-        () => result,
-      )
+      this.logger.debug('Ddb query result %j', result)
 
       results.push(result)
 
@@ -496,8 +485,10 @@ export class Ddb {
     return { inputs, outputs, results }
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
-  public async scan<TItems extends (unknown | undefined)[] = (unknown | undefined)[]>(
+  public async scan<
+    // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
+    TItems extends (unknown | undefined)[] = (unknown | undefined)[],
+  >(
     _: Omit<ScanCommandInput, 'ExpressionAttributeValues'> & {
       autoPaginate?: boolean
       ExpressionAttributeValues?: Record<string, DdbScalarTypes>
@@ -522,10 +513,7 @@ export class Ddb {
           : undefined,
       }
 
-      await this.logger._6_spam(
-        () => `Ddb scan input`,
-        () => input,
-      )
+      this.logger.trace('Ddb scan input %j', input)
 
       inputs.push(input)
 
@@ -533,10 +521,7 @@ export class Ddb {
 
       const output: ScanCommandOutput = await this.dynamoDB.scan(input)
 
-      await this.logger._6_spam(
-        () => `Ddb scan output`,
-        () => output,
-      )
+      this.logger.trace('Ddb scan output %j', output)
 
       outputs.push(output)
 
@@ -546,10 +531,7 @@ export class Ddb {
         unmarshall(item, Ddb.UnmarshallOptions),
       ) as TItems
 
-      await this.logger._5_trace(
-        () => `Ddb scan result`,
-        () => result,
-      )
+      this.logger.debug('Ddb scan result %j', result)
 
       results.push(result)
 
@@ -590,10 +572,7 @@ export class Ddb {
         Select: 'COUNT',
       }
 
-      await this.logger._6_spam(
-        () => `Ddb scanCount input`,
-        () => input,
-      )
+      this.logger.trace('Ddb scanCount input %j', input)
 
       inputs.push(input)
 
@@ -601,10 +580,7 @@ export class Ddb {
 
       const output: ScanCommandOutput = await this.dynamoDB.scan(input)
 
-      await this.logger._6_spam(
-        () => `Ddb scanCount output`,
-        () => output,
-      )
+      this.logger.trace('Ddb scanCount output %j', output)
 
       outputs.push(output)
 
@@ -612,10 +588,7 @@ export class Ddb {
 
       const result: Integer = output.Count ?? 0
 
-      await this.logger._5_trace(
-        () => `Ddb scanCount result`,
-        () => result,
-      )
+      this.logger.debug('Ddb scanCount result %j', result)
 
       results.push(result)
 
@@ -625,11 +598,18 @@ export class Ddb {
       // eslint-disable-next-line no-unmodified-loop-condition
     } while (ExclusiveStartKey && autoPaginate)
 
-    return { inputs, outputs, result: results.reduce((sum, val) => sum + val, 0), results }
+    return {
+      inputs,
+      outputs,
+      result: results.reduce((sum, val) => sum + val, 0),
+      results,
+    }
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
-  public async transactGet<TItems extends (unknown | undefined)[] = (unknown | undefined)[]>(
+  public async transactGet<
+    // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
+    TItems extends (unknown | undefined)[] = (unknown | undefined)[],
+  >(
     _: TransactGetItemsCommandInput,
   ): Promise<{
     input: TransactGetItemsCommandInput
@@ -643,10 +623,7 @@ export class Ddb {
       ..._,
     }
 
-    await this.logger._6_spam(
-      () => `Ddb transactGet input`,
-      () => input,
-    )
+    this.logger.trace('Ddb transactGet input %j', input)
 
     //
 
@@ -654,10 +631,7 @@ export class Ddb {
       new TransactGetItemsCommand(input),
     )
 
-    await this.logger._6_spam(
-      () => `Ddb transactGet output`,
-      () => output,
-    )
+    this.logger.trace('Ddb transactGet output %j', output)
 
     //
 
@@ -670,10 +644,7 @@ export class Ddb {
       },
     ) as TItems
 
-    await this.logger._5_trace(
-      () => `Ddb transactGet result`,
-      () => result,
-    )
+    this.logger.debug('Ddb transactGet result %j', result)
 
     //
 
@@ -695,10 +666,7 @@ export class Ddb {
       ..._,
     }
 
-    await this.logger._6_spam(
-      () => `Ddb transactWrite input`,
-      () => input,
-    )
+    this.logger.trace('Ddb transactWrite input %j', input)
 
     //
 
@@ -706,19 +674,13 @@ export class Ddb {
       new TransactWriteItemsCommand(input),
     )
 
-    await this.logger._6_spam(
-      () => `Ddb transactWrite output`,
-      () => output,
-    )
+    this.logger.trace('Ddb transactWrite output %j', output)
 
     //
 
     const result: undefined = undefined
 
-    await this.logger._5_trace(
-      () => `Ddb transactWrite result`,
-      () => result,
-    )
+    this.logger.debug('Ddb transactWrite result %j', result)
 
     //
 
@@ -743,29 +705,21 @@ export class Ddb {
 
     const input: UpdateItemCommandInput = Ddb.UpdateItemCommandInput(_)
 
-    await this.logger._6_spam(
-      () => `Ddb update input`,
-      () => input,
-    )
+    this.logger.trace('Ddb update input %j', input)
 
     //
 
-    const output: UpdateItemCommandOutput = await this.dynamoDB.updateItem(input)
+    const output: UpdateItemCommandOutput =
+      await this.dynamoDB.updateItem(input)
 
-    await this.logger._6_spam(
-      () => `Ddb update output`,
-      () => output,
-    )
+    this.logger.trace('Ddb update output %j', output)
 
     //
 
     const result: TItem = //
       unmarshall(output.Attributes ?? {}, Ddb.UnmarshallOptions) as TItem
 
-    await this.logger._5_trace(
-      () => `Ddb update result`,
-      () => result,
-    )
+    this.logger.debug('Ddb update result %j', result)
 
     //
 

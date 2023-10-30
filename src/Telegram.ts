@@ -1,7 +1,6 @@
+import { Logger } from 'pino'
 import { Context, Telegraf } from 'telegraf'
 import { Message } from 'typegram'
-
-import { Logger } from './Logger'
 
 //
 
@@ -17,7 +16,9 @@ export interface TelegramSendOutput {
 //
 
 export class Telegram {
-  private static readonly SEND_MESSAGE_MARKUP_HTML: Parameters<Context['sendMessage']>['1'] = {
+  private static readonly SEND_MESSAGE_MARKUP_HTML: Parameters<
+    Context['sendMessage']
+  >['1'] = {
     parse_mode: 'HTML',
   }
 
@@ -38,21 +39,19 @@ export class Telegram {
   //
 
   public async send(input: TelegramSendInput): Promise<TelegramSendOutput> {
-    await this.logger._5_trace(
-      () => `Telegram send input`,
-      () => input,
-    )
+    this.logger.debug('Telegram send input %j', input)
 
     //
 
     const chatId: string | undefined = input.chatId ?? this.chatId
     if (chatId === undefined) throw new Error('chatId === undefined')
 
-    const message: Message.TextMessage = await this.telegraf.telegram.sendMessage(
-      chatId,
-      input.message,
-      Telegram.SEND_MESSAGE_MARKUP_HTML,
-    )
+    const message: Message.TextMessage =
+      await this.telegraf.telegram.sendMessage(
+        chatId,
+        input.message,
+        Telegram.SEND_MESSAGE_MARKUP_HTML,
+      )
 
     //
 
@@ -60,10 +59,7 @@ export class Telegram {
       message,
     }
 
-    await this.logger._5_trace(
-      () => `Telegram send output`,
-      () => output,
-    )
+    this.logger.debug('Telegram send output %j', output)
 
     //
 
