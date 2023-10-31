@@ -1,1 +1,1 @@
-export type NodeEnv = 'DEV' | 'PROD'
+export type NodeEnv = 'development' | 'production' | 'test'

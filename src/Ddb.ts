@@ -265,14 +265,14 @@ export class Ddb {
       ),
     }
 
-    this.logger.trace('Ddb batchGet input %j', input)
+    this.logger.trace(input, 'Ddb:batchGet:input')
 
     //
 
     const output: BatchGetItemCommandOutput =
       await this.dynamoDB.batchGetItem(input)
 
-    this.logger.trace('Ddb batchGet output %j', output)
+    this.logger.trace(output, 'Ddb:batchGet:output')
 
     //
 
@@ -288,7 +288,7 @@ export class Ddb {
       }
     }
 
-    this.logger.debug('Ddb batchGet result %j', result)
+    this.logger.debug(result, 'Ddb:batchGet:result')
 
     //
 
@@ -306,20 +306,20 @@ export class Ddb {
 
     const input: BatchWriteItemCommandInput = _
 
-    this.logger.trace('Ddb batchWrite input %j', input)
+    this.logger.trace(input, 'Ddb:batchWrite:input')
 
     //
 
     const output: BatchWriteItemCommandOutput =
       await this.dynamoDB.batchWriteItem(input)
 
-    this.logger.trace('Ddb batchWrite output %j', output)
+    this.logger.trace(output, 'Ddb:batchWrite:output')
 
     //
 
     const result: undefined = undefined
 
-    this.logger.debug('Ddb batchWrite result %j', result)
+    this.logger.debug(result, 'Ddb:batchWrite:result')
 
     //
 
@@ -337,20 +337,20 @@ export class Ddb {
 
     const input: DeleteItemCommandInput = Ddb.DeleteItemCommandInput(_)
 
-    this.logger.trace('Ddb delete input %j', input)
+    this.logger.trace(input, 'Ddb:delete:input')
 
     //
 
     const output: DeleteItemCommandOutput =
       await this.dynamoDB.deleteItem(input)
 
-    this.logger.trace('Ddb delete output %j', output)
+    this.logger.trace(output, 'Ddb:delete:output')
 
     //
 
     const result: undefined = undefined
 
-    this.logger.debug('Ddb delete result %j', result)
+    this.logger.debug(result, 'Ddb:delete:result')
 
     //
 
@@ -368,13 +368,13 @@ export class Ddb {
 
     const input: GetItemCommandInput = Ddb.GetItemCommandInput(_)
 
-    this.logger.trace('Ddb get input %j', input)
+    this.logger.trace(input, 'Ddb:get:input')
 
     //
 
     const output: GetItemCommandOutput = await this.dynamoDB.getItem(input)
 
-    this.logger.trace('Ddb get output %j', output)
+    this.logger.trace(output, 'Ddb:get:output')
 
     //
 
@@ -382,7 +382,7 @@ export class Ddb {
       ? (unmarshall(output.Item, Ddb.UnmarshallOptions) as TItem)
       : undefined
 
-    this.logger.debug('Ddb get result %j', result)
+    this.logger.debug(result, 'Ddb:get:result')
 
     //
 
@@ -400,13 +400,13 @@ export class Ddb {
 
     const input: PutItemCommandInput = Ddb.PutItemCommandInput(_)
 
-    this.logger.trace('Ddb put input %j', input)
+    this.logger.trace(input, 'Ddb:put:input')
 
     //
 
     const output: PutItemCommandOutput = await this.dynamoDB.putItem(input)
 
-    this.logger.trace('Ddb put output %j', output)
+    this.logger.trace(output, 'Ddb:put:output')
 
     //
 
@@ -415,7 +415,7 @@ export class Ddb {
         ? (unmarshall(input.Item, Ddb.UnmarshallOptions) as TItem)
         : undefined
 
-    this.logger.debug('Ddb put result %j', result)
+    this.logger.debug(result, 'Ddb:put:result')
 
     //
 
@@ -454,7 +454,7 @@ export class Ddb {
           : undefined,
       }
 
-      this.logger.trace('Ddb query input %j', input)
+      this.logger.trace(input, 'Ddb:query:input')
 
       inputs.push(input)
 
@@ -462,7 +462,7 @@ export class Ddb {
 
       const output: QueryCommandOutput = await this.dynamoDB.query(input)
 
-      this.logger.trace('Ddb query output %j', output)
+      this.logger.trace(output, 'Ddb:query:output')
 
       outputs.push(output)
 
@@ -472,7 +472,7 @@ export class Ddb {
         unmarshall(item, Ddb.UnmarshallOptions),
       ) as TItems
 
-      this.logger.debug('Ddb query result %j', result)
+      this.logger.debug(result, 'Ddb:query:result')
 
       results.push(result)
 
@@ -513,7 +513,7 @@ export class Ddb {
           : undefined,
       }
 
-      this.logger.trace('Ddb scan input %j', input)
+      this.logger.trace(input, 'Ddb:scan:input')
 
       inputs.push(input)
 
@@ -521,7 +521,7 @@ export class Ddb {
 
       const output: ScanCommandOutput = await this.dynamoDB.scan(input)
 
-      this.logger.trace('Ddb scan output %j', output)
+      this.logger.trace(output, 'Ddb:scan:output')
 
       outputs.push(output)
 
@@ -531,7 +531,7 @@ export class Ddb {
         unmarshall(item, Ddb.UnmarshallOptions),
       ) as TItems
 
-      this.logger.debug('Ddb scan result %j', result)
+      this.logger.debug(result, 'Ddb:scan:result')
 
       results.push(result)
 
@@ -572,7 +572,7 @@ export class Ddb {
         Select: 'COUNT',
       }
 
-      this.logger.trace('Ddb scanCount input %j', input)
+      this.logger.trace(input, 'Ddb:scanCount:input')
 
       inputs.push(input)
 
@@ -580,7 +580,7 @@ export class Ddb {
 
       const output: ScanCommandOutput = await this.dynamoDB.scan(input)
 
-      this.logger.trace('Ddb scanCount output %j', output)
+      this.logger.trace(output, 'Ddb:scanCount:output')
 
       outputs.push(output)
 
@@ -588,7 +588,7 @@ export class Ddb {
 
       const result: Integer = output.Count ?? 0
 
-      this.logger.debug('Ddb scanCount result %j', result)
+      this.logger.debug(result, 'Ddb:scanCount:result')
 
       results.push(result)
 
@@ -623,7 +623,7 @@ export class Ddb {
       ..._,
     }
 
-    this.logger.trace('Ddb transactGet input %j', input)
+    this.logger.trace(input, 'Ddb:transactGet:input')
 
     //
 
@@ -631,7 +631,7 @@ export class Ddb {
       new TransactGetItemsCommand(input),
     )
 
-    this.logger.trace('Ddb transactGet output %j', output)
+    this.logger.trace(output, 'Ddb:transactGet:output')
 
     //
 
@@ -644,7 +644,7 @@ export class Ddb {
       },
     ) as TItems
 
-    this.logger.debug('Ddb transactGet result %j', result)
+    this.logger.debug(result, 'Ddb:transactGet:result')
 
     //
 
@@ -666,7 +666,7 @@ export class Ddb {
       ..._,
     }
 
-    this.logger.trace('Ddb transactWrite input %j', input)
+    this.logger.trace(input, 'Ddb:transactWrite:input')
 
     //
 
@@ -674,13 +674,13 @@ export class Ddb {
       new TransactWriteItemsCommand(input),
     )
 
-    this.logger.trace('Ddb transactWrite output %j', output)
+    this.logger.trace(output, 'Ddb:transactWrite:output')
 
     //
 
     const result: undefined = undefined
 
-    this.logger.debug('Ddb transactWrite result %j', result)
+    this.logger.debug(result, 'Ddb:transactWrite:result')
 
     //
 
@@ -705,21 +705,21 @@ export class Ddb {
 
     const input: UpdateItemCommandInput = Ddb.UpdateItemCommandInput(_)
 
-    this.logger.trace('Ddb update input %j', input)
+    this.logger.trace(input, 'Ddb:update:input')
 
     //
 
     const output: UpdateItemCommandOutput =
       await this.dynamoDB.updateItem(input)
 
-    this.logger.trace('Ddb update output %j', output)
+    this.logger.trace(output, 'Ddb:update:output')
 
     //
 
     const result: TItem = //
       unmarshall(output.Attributes ?? {}, Ddb.UnmarshallOptions) as TItem
 
-    this.logger.debug('Ddb update result %j', result)
+    this.logger.debug(result, 'Ddb:update:result')
 
     //
 
