@@ -13,7 +13,7 @@ import {
   TimeZoneResponse,
   TimeZoneResponseData,
 } from '@googlemaps/google-maps-services-js'
-import { Logger } from 'pino'
+import { type Logger } from 'pino'
 
 import { Float } from './Float'
 import { Integer } from './Integer'

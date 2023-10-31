@@ -37,7 +37,7 @@ import {
   unmarshall,
   type unmarshallOptions as UnmarshallOptions,
 } from '@aws-sdk/util-dynamodb'
-import { Logger } from 'pino'
+import { type Logger } from 'pino'
 
 import { assertType } from './assertType'
 import { Integer } from './Integer'

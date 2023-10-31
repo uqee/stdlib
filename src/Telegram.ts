@@ -1,4 +1,4 @@
-import { Logger } from 'pino'
+import { type Logger } from 'pino'
 import { Context, Telegraf } from 'telegraf'
 import { Message } from 'typegram'
 
