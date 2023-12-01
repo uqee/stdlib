@@ -35,14 +35,14 @@
     "typegram": "5.2.0",
     "typescript": "5.3.2"
   },
-  "exports": {
-    ".": "./build"
-  },
   "files": [
-    "/build"
+    "./*.js",
+    "!.eslintrc.js",
+    "!.jest.config.js",
+    "./*.d.ts"
   ],
   "license": "ISC",
-  "main": "./build/index.js",
+  "main": "./index.js",
   "name": "@uqee/stdlib",
   "repository": {
     "type": "git",
@@ -52,11 +52,12 @@
     ":eslint": "eslint ./src",
     ":jest": "jest --passWithNoTests",
     ":tsc": "tsc --noEmit",
-    "build": "rm -rf ./build && tsc --module commonjs --outDir ./build",
+    "build": "tsc --module commonjs --outDir .",
+    "clean": "rm *.d.ts *.js || true",
     "install:husky": "husky install",
     "reinstall": "rm -rf ./node_modules && pnpm install",
     "start": "true",
     "test": "pnpm :eslint && pnpm :tsc && pnpm :jest"
   },
-  "types": "./build/index.d.ts"
+  "types": "./index.d.ts"
 }
