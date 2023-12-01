@@ -30,7 +30,7 @@ export class Sqs {
   }
 
   public async send(input: SqsSendInput): Promise<SqsSendOutput> {
-    this.logger.debug(input, 'Sqs:send:input')
+    this.logger.debug({ input }, 'Sqs:send:input')
 
     //
 
@@ -44,7 +44,7 @@ export class Sqs {
       QueueUrl: input.queueUrl,
     }
 
-    this.logger.trace(request, 'Sqs:send:request')
+    this.logger.trace({ request }, 'Sqs:send:request')
 
     //
 
@@ -52,13 +52,13 @@ export class Sqs {
       new SendMessageCommand(request),
     )
 
-    this.logger.trace(response, 'Sqs:send:response')
+    this.logger.trace({ response }, 'Sqs:send:response')
 
     //
 
     const output: SqsSendOutput = {}
 
-    this.logger.debug(output, 'Sqs:send:output')
+    this.logger.debug({ output }, 'Sqs:send:output')
 
     return output
   }

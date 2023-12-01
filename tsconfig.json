@@ -29,8 +29,7 @@
     "useDefineForClassFields": true
   },
   "exclude": [
-    "/cjs",
-    "/esm",
+    "/build",
     "/node_modules",
   ]
 }

@@ -39,7 +39,7 @@ export class Telegram {
   //
 
   public async send(input: TelegramSendInput): Promise<TelegramSendOutput> {
-    this.logger.debug(input, 'Telegram:send:input')
+    this.logger.debug({ input }, 'Telegram:send:input')
 
     //
 
@@ -59,7 +59,7 @@ export class Telegram {
       message,
     }
 
-    this.logger.debug(output, 'Telegram:send:output')
+    this.logger.debug({ output }, 'Telegram:send:output')
 
     //
 
