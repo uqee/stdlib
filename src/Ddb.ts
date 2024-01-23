@@ -63,7 +63,7 @@ export type DdbMeta = {
 export class Ddb {
   public static readonly AttributeNames = {
     CREATED: '_c',
-    PRIMARY_KEY: '_pk',
+    PARTITION_KEY: '_pk',
     SORT_KEY: '_sk',
     UPDATED: '_u',
   } as const
