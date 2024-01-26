@@ -1,5 +1,5 @@
-declare class Brand<TBrand> {
-  private readonly __brand__: TBrand
-}
+const nominal = Symbol.for('nominal')
 
-export type Nominal<TBrand, TType> = Brand<TBrand> & TType
+export type Nominal<TNominal, TType> = TType & {
+  readonly [nominal]: TNominal
+}
