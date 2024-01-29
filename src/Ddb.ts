@@ -48,11 +48,7 @@ import { Timestamp } from './Timestamp'
 export type DdbScalarTypes = boolean | null | number | string | undefined // https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.NamingRulesDataTypes.html
 
 export type DdbItem = {
-  [key: number | string]:
-    | DdbItem
-    | DdbItem[]
-    | DdbScalarTypes
-    | DdbScalarTypes[]
+  [key: string]: DdbItem | DdbItem[] | DdbScalarTypes | DdbScalarTypes[]
 }
 
 export type DdbMeta = {
