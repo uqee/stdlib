@@ -39,19 +39,20 @@ import {
 } from '@aws-sdk/util-dynamodb'
 import { type Logger } from 'pino'
 
-import { assertType } from './assertType'
-import { Integer } from './Integer'
-import { Timestamp } from './Timestamp'
+import { assertType } from './assertType.js'
+import { type Integer } from './Integer.js'
+import { type Timestamp } from './Timestamp.js'
+import { toDefined } from './toDefined.js'
 
 //
 
 export type DdbScalarTypes = boolean | null | number | string | undefined // https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.NamingRulesDataTypes.html
 
-export type DdbItem = {
+export interface DdbItem {
   [key: string]: DdbItem | DdbItem[] | DdbScalarTypes | DdbScalarTypes[]
 }
 
-export type DdbMeta = {
+export interface DdbMeta {
   _c: Timestamp
   _pk: string
   _sk: string
@@ -231,7 +232,6 @@ export class Ddb {
   //
 
   public async batchGet<
-    // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
     TItems extends (unknown | undefined)[] = (unknown | undefined)[],
   >(
     _: Omit<BatchGetItemCommandInput, 'RequestItems'> & {
@@ -255,7 +255,7 @@ export class Ddb {
         (result, key) => {
           result[key] = {
             ..._.RequestItems[key],
-            Keys: _.RequestItems[key].Keys.map((Key) =>
+            Keys: _.RequestItems[key]?.Keys.map((Key) =>
               marshall(Key, Ddb.MarshallOptions),
             ),
           }
@@ -279,11 +279,9 @@ export class Ddb {
     const result: Record<string, TItems> = {}
     if (output.Responses !== undefined) {
       for (const tableName of Object.keys(output.Responses)) {
-        if (result[tableName] === undefined) {
-          result[tableName] = [] as unknown as TItems
-        }
-        for (const response of output.Responses[tableName]) {
-          result[tableName].push(unmarshall(response, Ddb.UnmarshallOptions))
+        result[tableName] ??= [] as unknown as TItems
+        for (const response of toDefined(output.Responses[tableName])) {
+          result[tableName]?.push(unmarshall(response, Ddb.UnmarshallOptions))
         }
       }
     }
@@ -427,7 +425,6 @@ export class Ddb {
   }
 
   public async query<
-    // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
     TItems extends (unknown | undefined)[] = (unknown | undefined)[],
   >(
     _: Omit<QueryCommandInput, 'ExpressionAttributeValues'> & {
@@ -475,18 +472,17 @@ export class Ddb {
       this.logger.debug({ result }, 'Ddb:query:result')
 
       results.push(result)
+      if (!autoPaginate) break
 
       //
 
       ExclusiveStartKey = output.LastEvaluatedKey
-      // eslint-disable-next-line no-unmodified-loop-condition
-    } while (ExclusiveStartKey && autoPaginate)
+    } while (ExclusiveStartKey)
 
     return { inputs, outputs, results }
   }
 
   public async scan<
-    // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
     TItems extends (unknown | undefined)[] = (unknown | undefined)[],
   >(
     _: Omit<ScanCommandInput, 'ExpressionAttributeValues'> & {
@@ -534,17 +530,16 @@ export class Ddb {
       this.logger.debug({ result }, 'Ddb:scan:result')
 
       results.push(result)
+      if (!autoPaginate) break
 
       //
 
       ExclusiveStartKey = output.LastEvaluatedKey
-      // eslint-disable-next-line no-unmodified-loop-condition
-    } while (ExclusiveStartKey && autoPaginate)
+    } while (ExclusiveStartKey)
 
     return { inputs, outputs, results }
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
   public async scanCount(
     _: Omit<ScanCommandInput, 'ExpressionAttributeValues' | 'Select'> & {
       autoPaginate?: boolean
@@ -591,12 +586,12 @@ export class Ddb {
       this.logger.debug({ result }, 'Ddb:scanCount:result')
 
       results.push(result)
+      if (!autoPaginate) break
 
       //
 
       ExclusiveStartKey = output.LastEvaluatedKey
-      // eslint-disable-next-line no-unmodified-loop-condition
-    } while (ExclusiveStartKey && autoPaginate)
+    } while (ExclusiveStartKey)
 
     return {
       inputs,
@@ -607,7 +602,6 @@ export class Ddb {
   }
 
   public async transactGet<
-    // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
     TItems extends (unknown | undefined)[] = (unknown | undefined)[],
   >(
     _: TransactGetItemsCommandInput,
@@ -636,7 +630,6 @@ export class Ddb {
     //
 
     const result: TItems = (output.Responses ?? []).map(
-      // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
       (itemResponse): unknown | undefined => {
         return itemResponse.Item !== undefined
           ? unmarshall(itemResponse.Item, Ddb.UnmarshallOptions)

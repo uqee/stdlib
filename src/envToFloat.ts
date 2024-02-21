@@ -1,6 +1,6 @@
-import { assert } from './assert'
-import { assertDefined } from './assertDefined'
-import { Float } from './Float'
+import { assert } from './assert.js'
+import { assertDefined } from './assertDefined.js'
+import { type Float } from './Float.js'
 
 export const envToFloat = <TFloat extends Float = Float>(
   string: string | undefined,

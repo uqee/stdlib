@@ -1,4 +1,4 @@
-import { assert } from './assert'
+import { assert } from './assert.js'
 
 // https://github.com/microsoft/TypeScript/issues/34523
 export function assertUndefined<T>(

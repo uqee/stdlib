@@ -1,23 +1,24 @@
 import {
-  AddressComponent,
-  AddressType,
+  type AddressComponent,
+  type AddressType,
   Client,
-  DirectionsRequest,
-  DirectionsResponse,
-  GeocodeResult,
-  ReverseGeocodeRequest,
-  ReverseGeocodeResponse,
-  RouteLeg,
+  type DirectionsRequest,
+  type DirectionsResponse,
+  type GeocodeResult,
+  type ReverseGeocodeRequest,
+  type ReverseGeocodeResponse,
+  type RouteLeg,
   Status,
-  TimeZoneRequest,
-  TimeZoneResponse,
-  TimeZoneResponseData,
+  type TimeZoneRequest,
+  type TimeZoneResponse,
+  type TimeZoneResponseData,
 } from '@googlemaps/google-maps-services-js'
 import { type Logger } from 'pino'
 
-import { Float } from './Float'
-import { Integer } from './Integer'
-import { Timestamp } from './Timestamp'
+import { assertDefined } from './assertDefined.js'
+import { type Float } from './Float.js'
+import { type Integer } from './Integer.js'
+import { type Timestamp } from './Timestamp.js'
 
 //
 
@@ -108,7 +109,8 @@ export class Google {
 
     //
 
-    const routeLeg: RouteLeg | undefined = response.data.routes[0].legs[0]
+    const routeLeg: RouteLeg | undefined = response.data.routes[0]?.legs[0]
+    assertDefined(routeLeg)
 
     const output: GoogleDirectionsOutput = {
       addressFrom: routeLeg.start_address,

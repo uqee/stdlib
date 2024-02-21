@@ -1,12 +1,14 @@
 {
   "dependencies": {
-    "@aws-sdk/client-dynamodb": "3.515.0",
+    "@aws-sdk/client-dynamodb": "3.518.0",
     "@aws-sdk/client-sqs": "3.515.0",
-    "@aws-sdk/util-dynamodb": "3.515.0",
+    "@aws-sdk/util-dynamodb": "3.518.0",
     "@googlemaps/google-maps-services-js": "3.3.42",
     "telegraf": "4.15.3"
   },
   "devDependencies": {
+    "@jest/globals": "29.7.0",
+    "@tsconfig/node20": "20.1.2",
     "@types/aws-lambda": "8.10.134",
     "@types/jest": "29.5.12",
     "@types/node": "20.11.19",
@@ -16,7 +18,7 @@
     "eslint": "8.56.0",
     "eslint-config-prettier": "9.1.0",
     "eslint-config-standard": "17.1.0",
-    "eslint-import-resolver-alias": "1.1.2",
+    "eslint-import-resolver-typescript": "3.6.1",
     "eslint-plugin-import": "2.29.1",
     "eslint-plugin-jest": "27.9.0",
     "eslint-plugin-n": "16.6.2",
@@ -42,7 +44,6 @@
     "./*.d.ts"
   ],
   "license": "ISC",
-  "main": "./index.js",
   "name": "@uqee/stdlib",
   "repository": {
     "type": "git",
@@ -50,14 +51,14 @@
   },
   "scripts": {
     ":eslint": "eslint ./src",
-    ":jest": "jest --passWithNoTests",
+    ":jest": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js --passWithNoTests",
     ":tsc": "tsc --noEmit",
-    "build": "tsc --module commonjs --outDir .",
+    "build": "tsc --outDir .",
     "clean": "rm *.d.ts *.js || true",
     "install:husky": "husky install",
     "reinstall": "rm -rf ./node_modules && pnpm install",
     "start": "true",
     "test": "pnpm :eslint && pnpm :tsc && pnpm :jest"
   },
-  "types": "./index.d.ts"
+  "type": "module"
 }

@@ -1,4 +1,4 @@
-import { assertDefined } from './assertDefined'
+import { assertDefined } from './assertDefined.js'
 
 export const toDefined = <T>(t: T | undefined): T => {
   assertDefined(t)

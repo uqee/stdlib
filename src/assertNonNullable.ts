@@ -1,4 +1,4 @@
-import { assert } from './assert'
+import { assert } from './assert.js'
 
 export function assertNonNullable<T>(
   t: T | null | undefined,

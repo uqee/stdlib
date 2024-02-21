@@ -1,6 +1,6 @@
 import { type Logger } from 'pino'
-import { Context, Telegraf } from 'telegraf'
-import { Message } from 'typegram'
+import { type Context, Telegraf } from 'telegraf'
+import { type Message } from 'typegram'
 
 //
 

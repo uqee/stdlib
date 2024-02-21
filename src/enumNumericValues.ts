@@ -1,4 +1,4 @@
-import { EnumType } from './EnumType'
+import { type EnumType } from './EnumType.js'
 
 export const enumNumericValues = <TEnum extends string | number>(
   tenum: EnumType<TEnum>,

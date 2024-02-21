@@ -1,4 +1,4 @@
-import { assert } from './assert'
+import { assert } from './assert.js'
 
 export function assertEquals<Something extends string>(
   value: string,

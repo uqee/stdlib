@@ -19,15 +19,25 @@ module.exports = {
   ignorePatterns: [
     '**/build/', //
     '**/node_modules/',
-    '**/*.js',
+    '**/*.cjs',
   ],
   parser: '@typescript-eslint/parser',
   parserOptions: { project: `${__dirname}/tsconfig.json` },
   plugins: ['@typescript-eslint', 'import', 'simple-import-sort', 'jest'],
   rules: {
+    '@typescript-eslint/consistent-type-definitions': 'error',
+    '@typescript-eslint/consistent-type-exports': [
+      'error',
+      { fixMixedExportsWithInlineTypeSpecifier: true },
+    ],
+    '@typescript-eslint/consistent-type-imports': [
+      'error',
+      { fixStyle: 'inline-type-imports' },
+    ],
     '@typescript-eslint/no-empty-interface': 'off',
     '@typescript-eslint/no-inferrable-types': 'off',
     '@typescript-eslint/no-namespace': 'off',
+    '@typescript-eslint/no-redundant-type-constituents': 'off',
     'brace-style': 'off',
     camelcase: 'off',
     'comma-dangle': 'off',
@@ -46,10 +56,7 @@ module.exports = {
     'import/no-duplicates': 'error',
     'import/no-dynamic-require': 'error',
     'import/no-extraneous-dependencies': 'error',
-    'import/no-internal-modules': [
-      'error',
-      { allow: ['aws-cdk-lib/*', '**/lambdas/*', 'telegraf/*'] },
-    ],
+    'import/no-internal-modules': ['error', { allow: [] }],
     'import/no-mutable-exports': 'error',
     'import/no-named-as-default': 'error',
     'import/no-named-as-default-member': 'error',
@@ -57,7 +64,7 @@ module.exports = {
     'import/no-namespace': 'off',
     'import/no-nodejs-modules': 'off',
     'import/no-self-import': 'error',
-    'import/no-unassigned-import': ['error', { allow: ['**/*.css'] }],
+    'import/no-unassigned-import': ['error', { allow: [] }],
     'import/no-unresolved': ['error', { ignore: ['^aws-lambda$'] }],
     'import/no-unused-modules': 'error',
     'import/no-useless-path-segments': ['error', { noUselessIndex: true }],
@@ -77,5 +84,11 @@ module.exports = {
     'sort-keys': ['error', 'asc', { caseSensitive: false }],
     'sort-vars': ['error', { ignoreCase: true }],
     'space-before-function-paren': 'off',
+  },
+  settings: {
+    'import/resolver': {
+      typescript: true,
+      node: true,
+    },
   },
 }

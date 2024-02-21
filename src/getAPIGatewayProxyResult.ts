@@ -1,9 +1,9 @@
 import {
-  APIGatewayProxyResult,
-  APIGatewayProxyStructuredResultV2,
+  type APIGatewayProxyResult,
+  type APIGatewayProxyStructuredResultV2,
 } from 'aws-lambda'
 
-import { isString } from './isString'
+import { isString } from './isString.js'
 
 export const getAPIGatewayProxyResult = (
   // NB: it's not actually v2, there's simply no v1 version in types

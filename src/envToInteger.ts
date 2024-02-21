@@ -1,6 +1,6 @@
-import { assert } from './assert'
-import { assertDefined } from './assertDefined'
-import { Integer } from './Integer'
+import { assert } from './assert.js'
+import { assertDefined } from './assertDefined.js'
+import { type Integer } from './Integer.js'
 
 export const envToInteger = <TInteger extends Integer = Integer>(
   string: string | undefined,

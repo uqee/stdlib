@@ -1,4 +1,4 @@
-import { assertDefined } from './assertDefined'
+import { assertDefined } from './assertDefined.js'
 
 export const envToString = <TString extends string = string>(
   string: string | undefined,

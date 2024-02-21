@@ -1,3 +1,3 @@
-export const assertType = <TValue>(value: TValue): TValue => {
+export function assertType<TValue>(value: TValue): TValue {
   return value
 }

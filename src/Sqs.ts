@@ -5,8 +5,8 @@ import type {
 import { SendMessageCommand, SQSClient } from '@aws-sdk/client-sqs'
 import { type Logger } from 'pino'
 
-import { Integer } from './Integer'
-import { isString } from './isString'
+import { type Integer } from './Integer.js'
+import { isString } from './isString.js'
 
 //
 
