@@ -1,35 +1,41 @@
-import type {
-  BatchGetItemCommandInput,
-  BatchGetItemCommandOutput,
-  BatchWriteItemCommandInput,
-  BatchWriteItemCommandOutput,
-  ConditionCheck,
-  Delete,
-  DeleteItemCommandInput,
-  DeleteItemCommandOutput,
-  Get,
-  GetItemCommandInput,
-  GetItemCommandOutput,
-  KeysAndAttributes,
-  Put,
-  PutItemCommandInput,
-  PutItemCommandOutput,
-  QueryCommandInput,
-  QueryCommandOutput,
-  ScanCommandInput,
-  ScanCommandOutput,
-  TransactGetItemsCommandInput,
-  TransactGetItemsCommandOutput,
-  TransactWriteItemsCommandInput,
-  TransactWriteItemsCommandOutput,
-  Update,
-  UpdateItemCommandInput,
-  UpdateItemCommandOutput,
-} from '@aws-sdk/client-dynamodb'
 import {
-  DynamoDB,
+  BatchGetItemCommand,
+  type BatchGetItemCommandInput,
+  type BatchGetItemCommandOutput,
+  BatchWriteItemCommand,
+  type BatchWriteItemCommandInput,
+  type BatchWriteItemCommandOutput,
+  type ConditionCheck,
+  type Delete,
+  DeleteItemCommand,
+  type DeleteItemCommandInput,
+  type DeleteItemCommandOutput,
+  DynamoDBClient,
+  type Get,
+  GetItemCommand,
+  type GetItemCommandInput,
+  type GetItemCommandOutput,
+  type KeysAndAttributes,
+  type Put,
+  PutItemCommand,
+  type PutItemCommandInput,
+  type PutItemCommandOutput,
+  QueryCommand,
+  type QueryCommandInput,
+  type QueryCommandOutput,
+  ScanCommand,
+  type ScanCommandInput,
+  type ScanCommandOutput,
   TransactGetItemsCommand,
+  type TransactGetItemsCommandInput,
+  type TransactGetItemsCommandOutput,
   TransactWriteItemsCommand,
+  type TransactWriteItemsCommandInput,
+  type TransactWriteItemsCommandOutput,
+  type Update,
+  UpdateItemCommand,
+  type UpdateItemCommandInput,
+  type UpdateItemCommandOutput,
 } from '@aws-sdk/client-dynamodb'
 import {
   marshall,
@@ -52,6 +58,8 @@ export type DdbScalarTypes = boolean | null | number | string | undefined // htt
 export interface DdbItem {
   [key: string]: DdbItem | DdbItem[] | DdbScalarTypes | DdbScalarTypes[]
 }
+
+type DdbItems = (DdbItem | undefined)[]
 
 export interface DdbMeta {
   _c: Timestamp
@@ -224,17 +232,15 @@ export class Ddb {
 
   //
 
-  private readonly dynamoDB: DynamoDB
+  private readonly dynamoDBClient: DynamoDBClient
 
   public constructor(private readonly logger: Logger) {
-    this.dynamoDB = captureAWSv3Client(new DynamoDB({}))
+    this.dynamoDBClient = captureAWSv3Client(new DynamoDBClient({}))
   }
 
   //
 
-  public async batchGet<
-    TItems extends (unknown | undefined)[] = (unknown | undefined)[],
-  >(
+  public async batchGet<TItems extends DdbItems = DdbItems>(
     _: Omit<BatchGetItemCommandInput, 'RequestItems'> & {
       RequestItems: Record<
         string, // TableName
@@ -269,8 +275,8 @@ export class Ddb {
 
     //
 
-    const output: BatchGetItemCommandOutput =
-      await this.dynamoDB.batchGetItem(input)
+    const output: BatchGetItemCommandOutput = //
+      await this.dynamoDBClient.send(new BatchGetItemCommand(input))
 
     this.logger.trace({ output }, 'Ddb:batchGet:output')
 
@@ -308,8 +314,8 @@ export class Ddb {
 
     //
 
-    const output: BatchWriteItemCommandOutput =
-      await this.dynamoDB.batchWriteItem(input)
+    const output: BatchWriteItemCommandOutput = //
+      await this.dynamoDBClient.send(new BatchWriteItemCommand(input))
 
     this.logger.trace({ output }, 'Ddb:batchWrite:output')
 
@@ -339,8 +345,8 @@ export class Ddb {
 
     //
 
-    const output: DeleteItemCommandOutput =
-      await this.dynamoDB.deleteItem(input)
+    const output: DeleteItemCommandOutput = //
+      await this.dynamoDBClient.send(new DeleteItemCommand(input))
 
     this.logger.trace({ output }, 'Ddb:delete:output')
 
@@ -370,7 +376,8 @@ export class Ddb {
 
     //
 
-    const output: GetItemCommandOutput = await this.dynamoDB.getItem(input)
+    const output: GetItemCommandOutput = //
+      await this.dynamoDBClient.send(new GetItemCommand(input))
 
     this.logger.trace({ output }, 'Ddb:get:output')
 
@@ -402,7 +409,8 @@ export class Ddb {
 
     //
 
-    const output: PutItemCommandOutput = await this.dynamoDB.putItem(input)
+    const output: PutItemCommandOutput = //
+      await this.dynamoDBClient.send(new PutItemCommand(input))
 
     this.logger.trace({ output }, 'Ddb:put:output')
 
@@ -424,9 +432,7 @@ export class Ddb {
     return { input, output, result }
   }
 
-  public async query<
-    TItems extends (unknown | undefined)[] = (unknown | undefined)[],
-  >(
+  public async query<TItems extends DdbItems = DdbItems>(
     _: Omit<QueryCommandInput, 'ExpressionAttributeValues'> & {
       autoPaginate?: boolean
       ExpressionAttributeValues?: Record<string, DdbScalarTypes>
@@ -457,7 +463,8 @@ export class Ddb {
 
       //
 
-      const output: QueryCommandOutput = await this.dynamoDB.query(input)
+      const output: QueryCommandOutput = //
+        await this.dynamoDBClient.send(new QueryCommand(input))
 
       this.logger.trace({ output }, 'Ddb:query:output')
 
@@ -482,9 +489,7 @@ export class Ddb {
     return { inputs, outputs, results }
   }
 
-  public async scan<
-    TItems extends (unknown | undefined)[] = (unknown | undefined)[],
-  >(
+  public async scan<TItems extends DdbItems = DdbItems>(
     _: Omit<ScanCommandInput, 'ExpressionAttributeValues'> & {
       autoPaginate?: boolean
       ExpressionAttributeValues?: Record<string, DdbScalarTypes>
@@ -515,7 +520,8 @@ export class Ddb {
 
       //
 
-      const output: ScanCommandOutput = await this.dynamoDB.scan(input)
+      const output: ScanCommandOutput = //
+        await this.dynamoDBClient.send(new ScanCommand(input))
 
       this.logger.trace({ output }, 'Ddb:scan:output')
 
@@ -573,7 +579,8 @@ export class Ddb {
 
       //
 
-      const output: ScanCommandOutput = await this.dynamoDB.scan(input)
+      const output: ScanCommandOutput = //
+        await this.dynamoDBClient.send(new ScanCommand(input))
 
       this.logger.trace({ output }, 'Ddb:scanCount:output')
 
@@ -601,9 +608,7 @@ export class Ddb {
     }
   }
 
-  public async transactGet<
-    TItems extends (unknown | undefined)[] = (unknown | undefined)[],
-  >(
+  public async transactGet<TItems extends DdbItems = DdbItems>(
     _: TransactGetItemsCommandInput,
   ): Promise<{
     input: TransactGetItemsCommandInput
@@ -621,9 +626,8 @@ export class Ddb {
 
     //
 
-    const output: TransactGetItemsCommandOutput = await this.dynamoDB.send(
-      new TransactGetItemsCommand(input),
-    )
+    const output: TransactGetItemsCommandOutput =
+      await this.dynamoDBClient.send(new TransactGetItemsCommand(input))
 
     this.logger.trace({ output }, 'Ddb:transactGet:output')
 
@@ -663,9 +667,8 @@ export class Ddb {
 
     //
 
-    const output: TransactWriteItemsCommandOutput = await this.dynamoDB.send(
-      new TransactWriteItemsCommand(input),
-    )
+    const output: TransactWriteItemsCommandOutput =
+      await this.dynamoDBClient.send(new TransactWriteItemsCommand(input))
 
     this.logger.trace({ output }, 'Ddb:transactWrite:output')
 
@@ -702,8 +705,8 @@ export class Ddb {
 
     //
 
-    const output: UpdateItemCommandOutput =
-      await this.dynamoDB.updateItem(input)
+    const output: UpdateItemCommandOutput = //
+      await this.dynamoDBClient.send(new UpdateItemCommand(input))
 
     this.logger.trace({ output }, 'Ddb:update:output')
 
