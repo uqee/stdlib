@@ -43,7 +43,7 @@ import {
   unmarshall,
   type unmarshallOptions as UnmarshallOptions,
 } from '@aws-sdk/util-dynamodb'
-import { captureAWSv3Client } from 'aws-xray-sdk'
+import * as awsXraySdk from 'aws-xray-sdk'
 import { type Logger } from 'pino'
 
 import { assertType } from './assertType.js'
@@ -235,7 +235,7 @@ export class Ddb {
   private readonly dynamoDBClient: DynamoDBClient
 
   public constructor(private readonly logger: Logger) {
-    this.dynamoDBClient = captureAWSv3Client(new DynamoDBClient({}))
+    this.dynamoDBClient = awsXraySdk.captureAWSv3Client(new DynamoDBClient({}))
   }
 
   //
