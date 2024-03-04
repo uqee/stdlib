@@ -1,6 +1,6 @@
 export const arraySortBy =
   <TObject extends object>(
-    keys: Array<keyof TObject | { field: keyof TObject; desc?: boolean }>, //
+    keys: (keyof TObject | { field: keyof TObject; desc?: boolean })[], //
     desc?: boolean,
   ) =>
   (objectA: TObject, objectB: TObject): number => {

@@ -37,6 +37,7 @@ import {
   unmarshall,
   type unmarshallOptions as UnmarshallOptions,
 } from '@aws-sdk/util-dynamodb'
+import { captureAWSv3Client } from 'aws-xray-sdk'
 import { type Logger } from 'pino'
 
 import { assertType } from './assertType.js'
@@ -226,7 +227,7 @@ export class Ddb {
   private readonly dynamoDB: DynamoDB
 
   public constructor(private readonly logger: Logger) {
-    this.dynamoDB = new DynamoDB({})
+    this.dynamoDB = captureAWSv3Client(new DynamoDB({}))
   }
 
   //
@@ -251,18 +252,17 @@ export class Ddb {
 
     const input: BatchGetItemCommandInput = {
       ..._,
-      RequestItems: Object.keys(_.RequestItems).reduce(
-        (result, key) => {
-          result[key] = {
-            ..._.RequestItems[key],
-            Keys: _.RequestItems[key]?.Keys.map((Key) =>
-              marshall(Key, Ddb.MarshallOptions),
-            ),
-          }
-          return result
-        },
-        {} as Record<string, KeysAndAttributes>,
-      ),
+      RequestItems: Object.keys(_.RequestItems).reduce<
+        Record<string, KeysAndAttributes>
+      >((result, key) => {
+        result[key] = {
+          ..._.RequestItems[key],
+          Keys: _.RequestItems[key]?.Keys.map((Key) =>
+            marshall(Key, Ddb.MarshallOptions),
+          ),
+        }
+        return result
+      }, {}),
     }
 
     this.logger.trace({ input }, 'Ddb:batchGet:input')

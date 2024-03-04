@@ -10,7 +10,7 @@ export interface TelegramSendInput {
 }
 
 export interface TelegramSendOutput {
-  message: Message.TextMessage
+  message: Message
 }
 
 //
@@ -32,7 +32,7 @@ export class Telegram {
     TG_BOT_TOKEN: string,
     TG_CHAT_ID?: string,
   ) {
-    this.chatId = TG_CHAT_ID ? `${TG_CHAT_ID}` : undefined
+    this.chatId = TG_CHAT_ID
     this.telegraf = new Telegraf(TG_BOT_TOKEN)
   }
 
@@ -46,12 +46,11 @@ export class Telegram {
     const chatId: string | undefined = input.chatId ?? this.chatId
     if (chatId === undefined) throw new Error('chatId === undefined')
 
-    const message: Message.TextMessage =
-      await this.telegraf.telegram.sendMessage(
-        chatId,
-        input.message,
-        Telegram.SEND_MESSAGE_MARKUP_HTML,
-      )
+    const message: Message = await this.telegraf.telegram.sendMessage(
+      chatId,
+      input.message,
+      Telegram.SEND_MESSAGE_MARKUP_HTML,
+    )
 
     //
 

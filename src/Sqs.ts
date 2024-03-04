@@ -3,6 +3,7 @@ import type {
   SendMessageCommandOutput,
 } from '@aws-sdk/client-sqs'
 import { SendMessageCommand, SQSClient } from '@aws-sdk/client-sqs'
+import { captureAWSv3Client } from 'aws-xray-sdk'
 import { type Logger } from 'pino'
 
 import { type Integer } from './Integer.js'
@@ -26,7 +27,7 @@ export class Sqs {
   private readonly sqsClient: SQSClient
 
   public constructor(private readonly logger: Logger) {
-    this.sqsClient = new SQSClient({})
+    this.sqsClient = captureAWSv3Client(new SQSClient({}))
   }
 
   public async send(input: SqsSendInput): Promise<SqsSendOutput> {
