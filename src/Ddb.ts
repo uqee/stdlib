@@ -61,7 +61,7 @@ export interface DdbItem {
   [key: string]: DdbItem | DdbItem[] | DdbScalarTypes | DdbScalarTypes[]
 }
 
-type DdbItems = (DdbItem | undefined)[]
+type DdbItems = (unknown | undefined)[]
 
 export interface DdbMeta {
   _c: Timestamp
