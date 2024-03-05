@@ -3,7 +3,9 @@ import type {
   SendMessageCommandOutput,
 } from '@aws-sdk/client-sqs'
 import { SendMessageCommand, SQSClient } from '@aws-sdk/client-sqs'
-import * as awsXraySdk from 'aws-xray-sdk'
+// https://github.com/aws/aws-xray-sdk-node/issues/491
+// eslint-disable-next-line import/default
+import awsXraySdkCore from 'aws-xray-sdk-core'
 import { type Logger } from 'pino'
 
 import { type Integer } from './Integer.js'
@@ -27,7 +29,7 @@ export class Sqs {
   private readonly sqsClient: SQSClient
 
   public constructor(private readonly logger: Logger) {
-    this.sqsClient = awsXraySdk.captureAWSv3Client(new SQSClient({}))
+    this.sqsClient = awsXraySdkCore.captureAWSv3Client(new SQSClient({}))
   }
 
   public async send(input: SqsSendInput): Promise<SqsSendOutput> {

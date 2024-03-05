@@ -43,7 +43,9 @@ import {
   unmarshall,
   type unmarshallOptions as UnmarshallOptions,
 } from '@aws-sdk/util-dynamodb'
-import * as awsXraySdk from 'aws-xray-sdk'
+// https://github.com/aws/aws-xray-sdk-node/issues/491
+// eslint-disable-next-line import/default
+import awsXraySdkCore from 'aws-xray-sdk-core'
 import { type Logger } from 'pino'
 
 import { assertType } from './assertType.js'
@@ -235,7 +237,9 @@ export class Ddb {
   private readonly dynamoDBClient: DynamoDBClient
 
   public constructor(private readonly logger: Logger) {
-    this.dynamoDBClient = awsXraySdk.captureAWSv3Client(new DynamoDBClient({}))
+    this.dynamoDBClient = awsXraySdkCore.captureAWSv3Client(
+      new DynamoDBClient({}),
+    )
   }
 
   //

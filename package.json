@@ -4,7 +4,7 @@
     "@aws-sdk/client-sqs": "3.525.0",
     "@aws-sdk/util-dynamodb": "3.525.0",
     "@googlemaps/google-maps-services-js": "3.3.42",
-    "aws-xray-sdk": "3.5.4",
+    "aws-xray-sdk-core": "3.5.4",
     "telegraf": "4.16.3"
   },
   "devDependencies": {
