@@ -28,8 +28,17 @@ export interface SqsSendOutput {}
 export class Sqs {
   private readonly sqsClient: SQSClient
 
-  public constructor(private readonly logger: Logger) {
-    this.sqsClient = awsXraySdkCore.captureAWSv3Client(new SQSClient({}))
+  public constructor(
+    private readonly logger: Logger,
+    private readonly options?: {
+      xray?: boolean
+    },
+  ) {
+    this.sqsClient = new SQSClient({})
+
+    if (this.options?.xray) {
+      this.sqsClient = awsXraySdkCore.captureAWSv3Client(this.sqsClient)
+    }
   }
 
   public async send(input: SqsSendInput): Promise<SqsSendOutput> {

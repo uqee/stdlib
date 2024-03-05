@@ -236,10 +236,19 @@ export class Ddb {
 
   private readonly dynamoDBClient: DynamoDBClient
 
-  public constructor(private readonly logger: Logger) {
-    this.dynamoDBClient = awsXraySdkCore.captureAWSv3Client(
-      new DynamoDBClient({}),
-    )
+  public constructor(
+    private readonly logger: Logger,
+    private readonly options?: {
+      xray?: boolean
+    },
+  ) {
+    this.dynamoDBClient = new DynamoDBClient({})
+
+    if (this.options?.xray) {
+      this.dynamoDBClient = awsXraySdkCore.captureAWSv3Client(
+        this.dynamoDBClient,
+      )
+    }
   }
 
   //
