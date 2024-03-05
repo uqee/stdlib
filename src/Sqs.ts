@@ -26,17 +26,14 @@ export interface SqsSendOutput {}
 //
 
 export class Sqs {
+  private readonly logger: Logger
   private readonly sqsClient: SQSClient
 
-  public constructor(
-    private readonly logger: Logger,
-    private readonly options?: {
-      xray?: boolean
-    },
-  ) {
+  public constructor(_: { logger: Logger; xray?: boolean }) {
+    this.logger = _.logger
     this.sqsClient = new SQSClient({})
 
-    if (this.options?.xray) {
+    if (_.xray) {
       this.sqsClient = awsXraySdkCore.captureAWSv3Client(this.sqsClient)
     }
   }
