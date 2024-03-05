@@ -461,7 +461,7 @@ export class Ddb {
     do {
       const input: QueryCommandInput = {
         ..._,
-        ExclusiveStartKey,
+        ExclusiveStartKey: autoPaginate ? undefined : _.ExclusiveStartKey,
         ExpressionAttributeValues: _.ExpressionAttributeValues
           ? marshall(_.ExpressionAttributeValues, Ddb.MarshallOptions)
           : undefined,
@@ -518,7 +518,7 @@ export class Ddb {
     do {
       const input: ScanCommandInput = {
         ..._,
-        ExclusiveStartKey,
+        ExclusiveStartKey: autoPaginate ? undefined : _.ExclusiveStartKey,
         ExpressionAttributeValues: _.ExpressionAttributeValues
           ? marshall(_.ExpressionAttributeValues, Ddb.MarshallOptions)
           : undefined,
@@ -576,7 +576,7 @@ export class Ddb {
     do {
       const input: ScanCommandInput = {
         ..._,
-        ExclusiveStartKey,
+        ExclusiveStartKey: autoPaginate ? undefined : _.ExclusiveStartKey,
         ExpressionAttributeValues: _.ExpressionAttributeValues
           ? marshall(_.ExpressionAttributeValues, Ddb.MarshallOptions)
           : undefined,
